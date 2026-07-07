@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Steam Gauge",
+  "version": "1.0",
+  "description": "Une extension de navigateur qui enrichit les pages du magasin Steam en affichant l'historique des prix Steam et Instant Gaming ainsi que les statistiques HowLongToBeat.",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "https://hltbapi1.azurewebsites.net/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://store.steampowered.com/app/*"],
+      "js": ["content.js"],
+      "css": ["style.css"]
+    }
+  ]
+}

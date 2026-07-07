@@ -1,4 +1,4 @@
-const CACHE_DURATION_MS = 60 * 60 * 1000; // 1 heure de cache pour garder les prix frais
+const CACHE_DURATION_MS = 12 * 60 * 60 * 1000;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "fetchData") {
@@ -39,7 +39,7 @@ async function getCombinedData(appId, gameName, editionId) {
 async function fetchHLTB(appId) {
   const url = `https://hltbapi1.azurewebsites.net/steam/${appId}`;
   const response = await fetch(url);
-  if (!response.ok) throw new Error(`Erreur API HLTB: ${response.status}`);
+  if (!response.ok) throw new Error(`HLTB API error: ${response.status}`);
   
   try {
     return await response.json();
@@ -72,7 +72,7 @@ async function fetchInstantGamingData(appId, gameName, editionId) {
     headers: { 'Accept': '*/*' }
   });
 
-  if (!response.ok) throw new Error(`Erreur IG: ${response.status}`);
+  if (!response.ok) throw new Error(`Instant Gaming error: ${response.status}`);
   
   try {
     const data = await response.json();
@@ -81,7 +81,7 @@ async function fetchInstantGamingData(appId, gameName, editionId) {
       if (priceNumber > 0) return data; 
     }
   } catch (e) {
-    console.warn("API Instant Gaming invalide.");
+    console.warn("Invalid Instant Gaming API");
   }
   return null;
 }

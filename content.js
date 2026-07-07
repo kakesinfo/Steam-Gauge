@@ -67,7 +67,7 @@ async function initSidebar(appId, gameName, editionId) {
       }
     }
   } catch (error) {
-    console.error("Erreur Ultimate Stats :", error);
+    console.error("Error Steam Gauge :", error);
   }
 }
 
@@ -81,7 +81,7 @@ function fetchData(appId, gameName, editionId) {
     }, (response) => {
       if (chrome.runtime.lastError) return reject(chrome.runtime.lastError);
       if (response && response.success) resolve(response.data);
-      else reject(response?.error || "Erreur inconnue");
+      else reject(response?.error || "Unknown error");
     });
   });
 }

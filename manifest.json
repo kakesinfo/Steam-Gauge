@@ -5,7 +5,8 @@
   "description": "Une extension de navigateur qui enrichit les pages du magasin Steam en affichant l'historique des prix Steam et Instant Gaming ainsi que les statistiques HowLongToBeat.",
   "permissions": ["activeTab", "storage"],
   "host_permissions": [
-    "https://hltbapi1.azurewebsites.net/*"
+    "https://hltbapi1.azurewebsites.net/*",
+    "https://www.instant-gaming.com/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -16,5 +17,13 @@
       "js": ["content.js"],
       "css": ["style.css"]
     }
-  ]
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "action": {
+    "default_icon": "icon.png"
+  }
 }

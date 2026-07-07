@@ -2,11 +2,12 @@
   "manifest_version": 3,
   "name": "Steam Gauge",
   "version": "1.0",
-  "description": "Une extension de navigateur qui enrichit les pages du magasin Steam en affichant l'historique des prix Steam et Instant Gaming ainsi que les statistiques HowLongToBeat.",
+  "description": "Affiche l'historique des prix (Steam/Instant Gaming) et les stats HowLongToBeat directement sur le magasin Steam.",
   "permissions": ["activeTab", "storage"],
   "host_permissions": [
     "https://hltbapi1.azurewebsites.net/*",
-    "https://www.instant-gaming.com/*"
+    "https://www.instant-gaming.com/*",
+    "https://api.isthereanydeal.com/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -25,5 +26,9 @@
   },
   "action": {
     "default_icon": "icon.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
   }
 }

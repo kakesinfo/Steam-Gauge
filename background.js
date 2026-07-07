@@ -1,43 +1,87 @@
-// On met le cache sur 24 heures (en millisecondes) pour les durées de jeu
-const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; 
+const CACHE_DURATION_MS = 12 * 60 * 60 * 1000;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "fetchHLTB") {
-    getHLTBWithCache(request.appId)
+  if (request.action === "fetchData") {
+    getCombinedData(request.appId, request.gameName, request.editionId)
       .then(data => sendResponse({ success: true, data }))
       .catch(error => sendResponse({ success: false, error: error.message }));
     return true; 
   }
 });
 
-async function getHLTBWithCache(appId) {
-  const cacheKey = `hltb_${appId}`;
+async function getCombinedData(appId, gameName, editionId) {
+  const cacheKey = `stats_${appId}`;
   
   const cached = await chrome.storage.local.get(cacheKey);
   const cacheData = cached[cacheKey];
 
-  // Si le cache est valide, on l'utilise
   if (cacheData && (Date.now() - cacheData.timestamp < CACHE_DURATION_MS)) {
     return cacheData.data;
   }
 
-  // Appel direct à l'API azure avec l'appId
+  const [hltbResult, igResult] = await Promise.allSettled([
+    fetchHLTB(appId),
+    fetchInstantGamingData(appId, gameName, editionId)
+  ]);
+
+  const combinedData = {
+    hltb: hltbResult.status === 'fulfilled' ? hltbResult.value : null,
+    ig: igResult.status === 'fulfilled' ? igResult.value : null
+  };
+
+  await chrome.storage.local.set({
+    [cacheKey]: { data: combinedData, timestamp: Date.now() }
+  });
+
+  return combinedData;
+}
+
+async function fetchHLTB(appId) {
   const url = `https://hltbapi1.azurewebsites.net/steam/${appId}`;
-  
   const response = await fetch(url);
-  if (!response.ok) throw new Error(`Erreur API HLTB: ${response.status}`);
+  if (!response.ok) throw new Error(`HLTB API error: ${response.status}`);
+  
+  try {
+    return await response.json();
+  } catch (e) {
+    return null;
+  }
+}
+
+async function fetchInstantGamingData(appId, gameName, editionId) {
+  const params = new URLSearchParams({
+    process: 'find_game',
+    steamappid: appId,
+    name: gameName || '',
+    region: '',
+    platform: 'pc',
+    type: 'steam',
+    find_steam_appid: 'undefined', 
+    find_by_name: 'undefined',     
+    isolang: 'fr', 
+    medium: 'chrome',
+    campaign: 'https://store.steampowered.com',
+    editionId: editionId || ''     
+  });
+
+  const url = `https://www.instant-gaming.com/ext_api/?${params.toString()}`;
+  
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'omit',
+    headers: { 'Accept': '*/*' }
+  });
+
+  if (!response.ok) throw new Error(`Instant Gaming error: ${response.status}`);
   
   try {
     const data = await response.json();
-    
-    // Sauvegarde dans le cache
-    await chrome.storage.local.set({
-      [cacheKey]: { data: data, timestamp: Date.now() }
-    });
-
-    return data;
+    if (data && data.success && data.url) {
+      const priceNumber = parseFloat(String(data.price).replace(',', '.'));
+      if (priceNumber > 0) return data; 
+    }
   } catch (e) {
-    console.warn("L'API n'a pas renvoyé de JSON valide.");
-    return null;
+    console.warn("Invalid Instant Gaming API");
   }
+  return null;
 }

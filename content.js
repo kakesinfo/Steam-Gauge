@@ -29,7 +29,7 @@ async function initSidebar(appId, gameName, editionId) {
     }
 
     const sidebarBlock = document.createElement('div');
-    
+
     sidebarBlock.className = 'ultimate-sidebar-block';
     sidebarBlock.innerHTML = `
       <div class="stats-header">Autres prix</div>

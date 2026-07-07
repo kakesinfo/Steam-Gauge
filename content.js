@@ -15,6 +15,7 @@ async function initSidebar(appId, gameName, editionId) {
 
     const hltb = data.hltb || {};
     const ig = data.ig;
+    const steam = data.steam || {};
 
     const mainStory = hltb.mainStory ? `${hltb.mainStory}h` : "--";
     const mainExtras = hltb.mainStoryWithExtras ? `${hltb.mainStoryWithExtras}h` : "--";
@@ -28,11 +29,23 @@ async function initSidebar(appId, gameName, editionId) {
       igUrl = ig.url;
     }
 
+    let steamPriceText = "N/A";
+    if (steam && steam.price && steam.price.amount) {
+      const cleanSteamPrice = parseFloat(String(steam.price.amount).replace(',', '.'));
+      steamPriceText = `${cleanSteamPrice.toFixed(2)}€`;
+    }
+
     const sidebarBlock = document.createElement('div');
 
     sidebarBlock.className = 'ultimate-sidebar-block';
     sidebarBlock.innerHTML = `
-      <div class="stats-header">Autres prix</div>
+      <div class="stats-header">Prix</div>
+
+      <div class="stats-row steam-row">
+        <span class="stats-label steam-label">Prix le plus bas Steam</span>
+        <span class="stats-value steam-value">${steamPriceText}</span>
+      </div>
+
       <div class="stats-row ig-row" id="ig-link">
         <span class="stats-label ig-label">Instant Gaming</span>
         <span class="stats-value ig-value">${igPriceText}</span>

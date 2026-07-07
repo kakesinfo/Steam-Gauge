@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <title>Options de l'extension</title>
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Configuration API</h2>
+        
+        <div class="form-group">
+            <label for="apiKey">Clé d'api <a href="https://isthereanydeal.com/apps">IsThereAnyDeal</a>:</label>
+            <!-- J'ai ajouté autocomplete="off" pour éviter que le navigateur n'affiche des suggestions par-dessus -->
+            <input type="text" id="apiKey" placeholder="Colle ta clé secrète ici..." autocomplete="off">
+        </div>
+        
+        <div class="actions">
+            <button id="saveBtn">Sauvegarder</button>
+            <span id="status"></span>
+        </div>
+    </div>
+
+    <!-- Le script chargé en externe -->
+    <script src="options.js"></script>
+</body>
+</html>

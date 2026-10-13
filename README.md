@@ -1,3 +1,3 @@
 # Steam Gauge
 
-Une extension de navigateur qui enrichit les pages du magasin Steam en affichant l'historique des prix Steam et Instant Gaming ainsi que les statistiques HowLongToBeat.
+A browser extension that enhances Steam store pages by displaying Steam and Instant Gaming price history, as well as HowLongToBeat statistics.
